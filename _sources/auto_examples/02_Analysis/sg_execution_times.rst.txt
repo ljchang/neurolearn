@@ -1,0 +1,22 @@
+
+:orphan:
+
+.. _sphx_glr_auto_examples_02_Analysis_sg_execution_times:
+
+Computation times
+=================
+**05:08.590** total execution time for **auto_examples_02_Analysis** files:
+
++-------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_examples_02_Analysis_plot_multivariate_prediction.py` (``plot_multivariate_prediction.py``)         | 01:49.844 | 0.0 MB |
++-------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_examples_02_Analysis_plot_multivariate_classification.py` (``plot_multivariate_classification.py``) | 01:28.076 | 0.0 MB |
++-------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_examples_02_Analysis_plot_decomposition.py` (``plot_decomposition.py``)                             | 00:43.947 | 0.0 MB |
++-------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_examples_02_Analysis_plot_univariate_regression.py` (``plot_univariate_regression.py``)             | 00:33.350 | 0.0 MB |
++-------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_examples_02_Analysis_plot_similarity_example.py` (``plot_similarity_example.py``)                   | 00:22.924 | 0.0 MB |
++-------------------------------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_examples_02_Analysis_plot_hyperalignment.py` (``plot_hyperalignment.py``)                           | 00:10.450 | 0.0 MB |
++-------------------------------------------------------------------------------------------------------------------------+-----------+--------+

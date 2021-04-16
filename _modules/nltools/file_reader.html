@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nltools.file_reader &#8212; nltools 0.4.4 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-rendered-html.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
+
+<!-- Google Analytics -->
+<script>
+  (function (i, s, o, g, r, a, m) {
+    i["GoogleAnalyticsObject"] = r;
+    (i[r] =
+      i[r] ||
+      function () {
+        (i[r].q = i[r].q || []).push(arguments);
+      }),
+      (i[r].l = 1 * new Date());
+    (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m);
+  })(
+    window,
+    document,
+    "script",
+    "https://www.google-analytics.com/analytics.js",
+    "ga"
+  );
+
+  ga("create", "UA-138438649-1", "auto");
+  ga("send", "pageview");
+</script>
+<!-- End Google Analytics -->
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          nltools</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.4.4</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../install.html">Installation</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../auto_examples/index.html">Tutorials</a></li>
+                <li><a href="http://www.github.com/ljchang/nltools">Github</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">TOC <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for nltools.file_reader</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">NeuroLearn File Reading Tools</span>
+<span class="sd">=============================</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;onsets_to_dm&quot;</span><span class="p">]</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Eshin Jolly&quot;</span><span class="p">]</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">nltools.data</span> <span class="kn">import</span> <span class="n">Design_Matrix</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+
+<div class="viewcode-block" id="onsets_to_dm"><a class="viewcode-back" href="../../api.html#nltools.file_reader.onsets_to_dm">[docs]</a><span class="k">def</span> <span class="nf">onsets_to_dm</span><span class="p">(</span>
+    <span class="n">F</span><span class="p">,</span>
+    <span class="n">sampling_freq</span><span class="p">,</span>
+    <span class="n">run_length</span><span class="p">,</span>
+    <span class="n">header</span><span class="o">=</span><span class="s2">&quot;infer&quot;</span><span class="p">,</span>
+    <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">keep_separate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">add_poly</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">unique_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">fill_na</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function can assist in reading in one or several in a 2-3 column onsets files, specified in seconds and converting it to a Design Matrix organized as samples X Stimulus Classes. sampling_freq should be specified in hertz; for TRs use hertz = 1/TR. Onsets files **must** be organized with columns in one of the following 4 formats:</span>
+
+<span class="sd">    1) &#39;Stim, Onset&#39;</span>
+<span class="sd">    2) &#39;Onset, Stim&#39;</span>
+<span class="sd">    3) &#39;Stim, Onset, Duration&#39;</span>
+<span class="sd">    4) &#39;Onset, Duration, Stim&#39;</span>
+
+<span class="sd">    No other file organizations are currently supported. *Note:* Stimulus offsets (onset + duration) that fall into an adjacent TR include that full TR. E.g. offset of 10.16s with TR = 2 has an offset of TR 5, which spans 10-12s, rather than an offset of TR 4, which spans 8-10s.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        F (filepath/DataFrame/list): path to file, pandas dataframe, or list of files or pandas dataframes</span>
+<span class="sd">        sampling_freq (float): sampling frequency in hertz; for TRs use (1 / TR)         run_length (int): number of TRs in the run these onsets came from</span>
+<span class="sd">        sort (bool, optional): whether to sort the columns of the resulting</span>
+<span class="sd">                                design matrix alphabetically; defaults to</span>
+<span class="sd">                                False</span>
+<span class="sd">        addpoly (int, optional: what order polynomial terms to add as new columns (e.g. 0 for intercept, 1 for linear trend and intercept, etc); defaults to None</span>
+<span class="sd">        header (str,optional): None if missing header, otherwise pandas</span>
+<span class="sd">                                header keyword; defaults to &#39;infer&#39;</span>
+<span class="sd">        keep_separate (bool): whether to seperate polynomial columns if reading a list of files and using the addpoly option; defaults to True</span>
+<span class="sd">        unique_cols (list, optional): additional columns to keep seperate across files (e.g. spikes); defaults to []</span>
+<span class="sd">        fill_na (str/int/float, optional): what value fill NaNs in with if reading in a list of files; defaults to None</span>
+<span class="sd">        kwargs: additional inputs to pandas.read_csv</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Design_Matrix class</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="p">[</span><span class="n">F</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sampling_freq</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;sampling_freq must be a float&quot;</span><span class="p">)</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">TR</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">sampling_freq</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">F</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input needs to be file path or pandas dataframe!&quot;</span><span class="p">)</span>
+        <span class="c1"># Keep an unaltered copy of the original dataframe for checking purposes below</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Only 2 columns in file, assuming all stimuli are the same duration&quot;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can only handle files with 2 or 3 columns!&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Try to infer the header</span>
+        <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">possibleHeaders</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Stim&quot;</span><span class="p">,</span> <span class="s2">&quot;Onset&quot;</span><span class="p">,</span> <span class="s2">&quot;Duration&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">possibleHeaders</span><span class="p">[:</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">possibleHeaders</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[</span><span class="n">possibleHeaders</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Can&#39;t figure out onset file organization. Make sure file has no more than 3 columns specified as &#39;Stim,Onset,Duration&#39; or &#39;Onset,Duration,Stim&#39;&quot;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Compute an offset in seconds if a Duration is provided</span>
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Onset&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Duration&quot;</span><span class="p">]</span>
+        <span class="c1"># Onset always starts at the closest TR rounded down, e.g.</span>
+        <span class="c1"># with TR = 2, and onset = 10.1 or 11.7 will both have onset of TR 5 as it spans the window 10-12s</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Onset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Onset&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">TR</span><span class="p">)))</span>
+
+        <span class="c1"># Offset includes the subsequent if Offset falls within window covered by that TR</span>
+        <span class="c1"># but not if it falls exactly on the subsequent TR, e.g. if TR = 2, and offset = 10.16, then TR 5 will be included but if offset = 10.00, TR 5 will not be included, as it covers the window 10-12s</span>
+        <span class="k">if</span> <span class="s2">&quot;Offset&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">conditional_round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">TR</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;Conditional rounding to the next TR if offset falls within window, otherwise not&quot;&quot;&quot;</span>
+                <span class="n">dur_in_TRs</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">TR</span>
+                <span class="n">dur_in_TRs_rounded_down</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">dur_in_TRs</span><span class="p">)</span>
+                <span class="c1"># If in the future we wanted to enable the ability to include a TR based on a % of that TR we can change the next line to compare to some value, e.g. at least 0.5s into that TR: dur_in_TRs - dur_in_TRs_rounded_down &gt; 0.5</span>
+                <span class="k">if</span> <span class="n">dur_in_TRs</span> <span class="o">&gt;</span> <span class="n">dur_in_TRs_rounded_down</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">dur_in_TRs_rounded_down</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">dur_in_TRs_rounded_down</span> <span class="o">-</span> <span class="mi">1</span>
+
+            <span class="c1"># Apply function</span>
+            <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Offset&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">conditional_round</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">TR</span><span class="p">,))</span>
+
+        <span class="c1"># Build dummy codes</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">Design_Matrix</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">run_length</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Stim&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()]),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Stim&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+            <span class="n">sampling_freq</span><span class="o">=</span><span class="n">sampling_freq</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;Offset&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;Onset&quot;</span><span class="p">]</span> <span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;Offset&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;Stim&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">X</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;Onset&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;Stim&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># Run a check</span>
+        <span class="k">if</span> <span class="s2">&quot;Offset&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">onsets</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">stim_counts</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Stim</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+            <span class="n">durations</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Stim&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">Duration</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">onsets</span><span class="p">,</span> <span class="n">stim_counts</span><span class="p">,</span> <span class="n">durations</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="o">*</span> <span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="n">TR</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">o</span> <span class="o">&lt;=</span> <span class="n">c</span> <span class="o">*</span> <span class="p">((</span><span class="n">d</span> <span class="o">/</span> <span class="n">TR</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Computed onsets for </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">Stim</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> are inconsistent with expected values. Please manually verify the outputted Design_Matrix!&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">add_poly</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">add_poly</span><span class="p">(</span><span class="n">add_poly</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">out</span><span class="p">]</span>
+
+        <span class="n">out_dm</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+            <span class="n">keep_separate</span><span class="o">=</span><span class="n">keep_separate</span><span class="p">,</span>
+            <span class="n">unique_cols</span><span class="o">=</span><span class="n">unique_cols</span><span class="p">,</span>
+            <span class="n">fill_na</span><span class="o">=</span><span class="n">fill_na</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out_dm</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">add_poly</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out_dm</span> <span class="o">=</span> <span class="n">out_dm</span><span class="o">.</span><span class="n">add_poly</span><span class="p">(</span><span class="n">add_poly</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fill_na</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out_dm</span> <span class="o">=</span> <span class="n">out_dm</span><span class="o">.</span><span class="n">fill_na</span><span class="p">(</span><span class="n">fill_na</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out_dm</span></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Cosan Laboratory.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

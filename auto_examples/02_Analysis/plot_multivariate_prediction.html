@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multivariate Prediction &#8212; nltools 0.4.4 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery-rendered-html.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
+
+<!-- Google Analytics -->
+<script>
+  (function (i, s, o, g, r, a, m) {
+    i["GoogleAnalyticsObject"] = r;
+    (i[r] =
+      i[r] ||
+      function () {
+        (i[r].q = i[r].q || []).push(arguments);
+      }),
+      (i[r].l = 1 * new Date());
+    (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m);
+  })(
+    window,
+    document,
+    "script",
+    "https://www.google-analytics.com/analytics.js",
+    "ga"
+  );
+
+  ga("create", "UA-138438649-1", "auto");
+  ga("send", "pageview");
+</script>
+<!-- End Google Analytics -->
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          nltools</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.4.4</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../install.html">Installation</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../index.html">Tutorials</a></li>
+                <li><a href="http://www.github.com/ljchang/nltools">Github</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">TOC <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Multivariate Prediction</a><ul>
+<li><a class="reference internal" href="#load-data">Load Data</a></li>
+<li><a class="reference internal" href="#prediction-with-cross-validation">Prediction with Cross-Validation</a></li>
+<li><a class="reference internal" href="#algorithms">Algorithms</a></li>
+<li><a class="reference internal" href="#cross-validation-schemes">Cross-Validation Schemes</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-02-analysis-plot-multivariate-prediction-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="multivariate-prediction">
+<span id="sphx-glr-auto-examples-02-analysis-plot-multivariate-prediction-py"></span><h1>Multivariate Prediction<a class="headerlink" href="#multivariate-prediction" title="Permalink to this headline">¶</a></h1>
+<p>Running MVPA style analyses using multivariate regression is even easier and faster
+than univariate methods. All you need to do is specify the algorithm and
+cross-validation parameters. Currently, we have several different linear algorithms
+implemented from <a class="reference external" href="http://scikit-learn.org/stable/">scikit-learn</a>.</p>
+<div class="section" id="load-data">
+<h2>Load Data<a class="headerlink" href="#load-data" title="Permalink to this headline">¶</a></h2>
+<p>First, let’s load the pain data for this example.  We need to specify the
+training levels.  We will grab the pain intensity variable from the data.X
+field.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">nltools.datasets</span> <span class="kn">import</span> <span class="n">fetch_pain</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">fetch_pain</span><span class="p">()</span>
+<span class="n">data</span><span class="o">.</span><span class="n">Y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="s1">&#39;PainLevel&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="prediction-with-cross-validation">
+<h2>Prediction with Cross-Validation<a class="headerlink" href="#prediction-with-cross-validation" title="Permalink to this headline">¶</a></h2>
+<p>We can now predict the output variable is a dictionary of the most
+useful output from the prediction analyses. The predict function runs
+the prediction multiple times. One of the iterations uses all of the
+data to calculate the ‘weight_map’. The other iterations are to estimate
+the cross-validated predictive accuracy.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stats</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;ridge&#39;</span><span class="p">,</span>
+                    <span class="n">cv_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;kfolds&#39;</span><span class="p">,</span><span class="s1">&#39;n_folds&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span><span class="s1">&#39;stratified&#39;</span><span class="p">:</span><span class="n">data</span><span class="o">.</span><span class="n">Y</span><span class="p">})</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><img alt="Prediction" class="sphx-glr-multi-img" src="../../_images/sphx_glr_plot_multivariate_prediction_001.png" />
+</li>
+<li><img alt="plot multivariate prediction" class="sphx-glr-multi-img" src="../../_images/sphx_glr_plot_multivariate_prediction_002.png" />
+</li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/utils/validation.py:70: FutureWarning: Pass shuffle=False, random_state=None as keyword args. From version 1.0 (renaming of 0.25) passing these as positional arguments will result in an error
+  warnings.warn(f&quot;Pass {args_msg} as keyword args. From version &quot;
+overall Root Mean Squared Error: 0.00
+overall Correlation: 1.00
+overall CV Root Mean Squared Error: 0.56
+overall CV Correlation: 0.74
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variables as keyword args: x, y. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<p>Display the available data in the output dictionary</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stats</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>dict_keys([&#39;Y&#39;, &#39;yfit_all&#39;, &#39;intercept&#39;, &#39;weight_map&#39;, &#39;yfit_xval&#39;, &#39;intercept_xval&#39;, &#39;weight_map_xval&#39;, &#39;cv_idx&#39;, &#39;rmse_all&#39;, &#39;r_all&#39;, &#39;rmse_xval&#39;, &#39;r_xval&#39;])
+</pre></div>
+</div>
+<p>Plot the multivariate weight map</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;weight_map&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="plot multivariate prediction" class="sphx-glr-single-img" src="../../_images/sphx_glr_plot_multivariate_prediction_003.png" />
+<p>Return the cross-validated predicted data</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;yfit_xval&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>array([2.429143  , 1.6314082 , 1.8126671 , 3.5586872 , 0.9020816 ,
+       1.2204387 , 2.7179723 , 1.3614657 , 1.6188056 , 3.3171613 ,
+       0.8049244 , 1.515244  , 2.9259906 , 1.4362226 , 1.7737616 ,
+       1.9213707 , 1.8017511 , 1.1947873 , 2.4830327 , 0.893635  ,
+       1.8442726 , 2.4820771 , 1.4400073 , 1.4230402 , 4.0127153 ,
+       1.4100523 , 2.3947031 , 1.8863165 , 1.3747299 , 2.1128185 ,
+       2.119888  , 1.1560311 , 2.0790844 , 3.9388707 , 1.2056164 ,
+       2.1786842 , 3.2859573 , 1.6076977 , 1.677222  , 2.524438  ,
+       1.4692608 , 2.2496471 , 2.2506433 , 1.5619733 , 1.9757571 ,
+       3.2622285 , 1.2873312 , 2.0369186 , 1.7596395 , 0.9663484 ,
+       2.233838  , 1.7051153 , 1.8357867 , 0.75496656, 2.624507  ,
+       0.991569  , 2.3120227 , 2.2533536 , 1.9480464 , 2.0109935 ,
+       2.0345416 , 1.0215064 , 1.3073304 , 2.4055963 , 1.38359   ,
+       1.560549  , 2.3911996 , 1.6636779 , 2.0051494 , 2.4855537 ,
+       1.2744507 , 2.5009933 , 2.8917952 , 1.9525683 , 1.7255962 ,
+       3.1939049 , 1.4861531 , 1.9714726 , 2.1241016 , 1.5545266 ,
+       1.5466385 , 2.7263155 , 1.1705334 , 2.1081424 ], dtype=float32)
+</pre></div>
+</div>
+</div>
+<div class="section" id="algorithms">
+<h2>Algorithms<a class="headerlink" href="#algorithms" title="Permalink to this headline">¶</a></h2>
+<p>There are several types of linear algorithms implemented including:
+Support Vector Machines (svr), Principal Components Analysis (pcr), and
+penalized methods such as ridge and lasso.  These examples use 5-fold
+cross-validation holding out the same subject in each fold.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">subject_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="s1">&#39;SubjectID&#39;</span><span class="p">]</span>
+<span class="n">svr_stats</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;svr&#39;</span><span class="p">,</span>
+                        <span class="n">cv_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;kfolds&#39;</span><span class="p">,</span><span class="s1">&#39;n_folds&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                        <span class="s1">&#39;subject_id&#39;</span><span class="p">:</span><span class="n">subject_id</span><span class="p">},</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;kernel&#39;</span><span class="p">:</span><span class="s2">&quot;linear&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><img alt="Prediction" class="sphx-glr-multi-img" src="../../_images/sphx_glr_plot_multivariate_prediction_004.png" />
+</li>
+<li><img alt="plot multivariate prediction" class="sphx-glr-multi-img" src="../../_images/sphx_glr_plot_multivariate_prediction_005.png" />
+</li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>overall Root Mean Squared Error: 0.10
+overall Correlation: 0.99
+overall CV Root Mean Squared Error: 0.88
+overall CV Correlation: 0.57
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variables as keyword args: x, y. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<p>Lasso Regression</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lasso_stats</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;lasso&#39;</span><span class="p">,</span>
+                        <span class="n">cv_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;kfolds&#39;</span><span class="p">,</span><span class="s1">&#39;n_folds&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                        <span class="s1">&#39;subject_id&#39;</span><span class="p">:</span><span class="n">subject_id</span><span class="p">},</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span><span class="o">.</span><span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><img alt="Prediction" class="sphx-glr-multi-img" src="../../_images/sphx_glr_plot_multivariate_prediction_006.png" />
+</li>
+<li><img alt="plot multivariate prediction" class="sphx-glr-multi-img" src="../../_images/sphx_glr_plot_multivariate_prediction_007.png" />
+</li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>overall Root Mean Squared Error: 0.69
+overall Correlation: 0.58
+overall CV Root Mean Squared Error: 0.74
+overall CV Correlation: 0.43
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variables as keyword args: x, y. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<p>Principal Components Regression</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pcr_stats</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;pcr&#39;</span><span class="p">,</span>
+                        <span class="n">cv_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;kfolds&#39;</span><span class="p">,</span><span class="s1">&#39;n_folds&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                        <span class="s1">&#39;subject_id&#39;</span><span class="p">:</span><span class="n">subject_id</span><span class="p">})</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><img alt="Prediction" class="sphx-glr-multi-img" src="../../_images/sphx_glr_plot_multivariate_prediction_008.png" />
+</li>
+<li><img alt="plot multivariate prediction" class="sphx-glr-multi-img" src="../../_images/sphx_glr_plot_multivariate_prediction_009.png" />
+</li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>overall Root Mean Squared Error: 0.00
+overall Correlation: 1.00
+overall CV Root Mean Squared Error: 0.91
+overall CV Correlation: 0.58
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variables as keyword args: x, y. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+<p>Principal Components Regression with Lasso</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pcr_stats</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;lassopcr&#39;</span><span class="p">,</span>
+                        <span class="n">cv_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;kfolds&#39;</span><span class="p">,</span><span class="s1">&#39;n_folds&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                        <span class="s1">&#39;subject_id&#39;</span><span class="p">:</span><span class="n">subject_id</span><span class="p">})</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><img alt="Prediction" class="sphx-glr-multi-img" src="../../_images/sphx_glr_plot_multivariate_prediction_010.png" />
+</li>
+<li><img alt="plot multivariate prediction" class="sphx-glr-multi-img" src="../../_images/sphx_glr_plot_multivariate_prediction_011.png" />
+</li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>overall Root Mean Squared Error: 0.48
+overall Correlation: 0.84
+overall CV Root Mean Squared Error: 0.73
+overall CV Correlation: 0.54
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/seaborn/_decorators.py:36: FutureWarning: Pass the following variables as keyword args: x, y. From version 0.12, the only valid positional argument will be `data`, and passing other arguments without an explicit keyword will result in an error or misinterpretation.
+  warnings.warn(
+</pre></div>
+</div>
+</div>
+<div class="section" id="cross-validation-schemes">
+<h2>Cross-Validation Schemes<a class="headerlink" href="#cross-validation-schemes" title="Permalink to this headline">¶</a></h2>
+<p>There are several different ways to perform cross-validation.  The standard
+approach is to use k-folds, where the data is equally divided into k subsets
+and each fold serves as both training and test.
+Often we want to hold out the same subjects in each fold.
+This can be done by passing in a vector of unique subject IDs that
+correspond to the images in the data frame.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">subject_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="s1">&#39;SubjectID&#39;</span><span class="p">]</span>
+<span class="n">ridge_stats</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;ridge&#39;</span><span class="p">,</span>
+                        <span class="n">cv_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;kfolds&#39;</span><span class="p">,</span><span class="s1">&#39;n_folds&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span><span class="s1">&#39;subject_id&#39;</span><span class="p">:</span><span class="n">subject_id</span><span class="p">},</span>
+                        <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span><span class="o">.</span><span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.7471e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.60058e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.06616e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.74861e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.13513e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.35695e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+overall Root Mean Squared Error: 0.00
+overall Correlation: 1.00
+overall CV Root Mean Squared Error: 0.91
+overall CV Correlation: 0.58
+</pre></div>
+</div>
+<p>Sometimes we want to ensure that the training labels are balanced across
+folds.  This can be done using the stratified k-folds method.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ridge_stats</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;ridge&#39;</span><span class="p">,</span>
+                        <span class="n">cv_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;kfolds&#39;</span><span class="p">,</span><span class="s1">&#39;n_folds&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;stratified&#39;</span><span class="p">:</span><span class="n">data</span><span class="o">.</span><span class="n">Y</span><span class="p">},</span>
+                        <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span><span class="o">.</span><span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.7471e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/utils/validation.py:70: FutureWarning: Pass shuffle=False, random_state=None as keyword args. From version 1.0 (renaming of 0.25) passing these as positional arguments will result in an error
+  warnings.warn(f&quot;Pass {args_msg} as keyword args. From version &quot;
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.65136e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=4.04699e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.79715e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.88579e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.84816e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+overall Root Mean Squared Error: 0.00
+overall Correlation: 1.00
+overall CV Root Mean Squared Error: 0.56
+overall CV Correlation: 0.74
+</pre></div>
+</div>
+<p>Leave One Subject Out Cross-Validaiton (LOSO) is when k=n subjects.
+This can be performed by passing in a vector indicating subject id’s of
+each image and using the loso flag.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ridge_stats</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;ridge&#39;</span><span class="p">,</span>
+                        <span class="n">cv_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;loso&#39;</span><span class="p">,</span><span class="s1">&#39;subject_id&#39;</span><span class="p">:</span> <span class="n">subject_id</span><span class="p">},</span>
+                        <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span><span class="o">.</span><span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.7471e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.9641e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.33201e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.53165e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.36392e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.15943e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.19182e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.00879e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.49376e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.63967e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.04156e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.89777e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.75343e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.52513e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.39306e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.97886e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.06796e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.31996e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.78119e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.95224e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.01953e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.57332e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.56552e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.26117e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.90453e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=1.818e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=3.0476e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.61631e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/linear_model/_ridge.py:187: LinAlgWarning: Ill-conditioned matrix (rcond=2.72577e-08): result may not be accurate.
+  dual_coef = linalg.solve(K, y, sym_pos=True,
+overall Root Mean Squared Error: 0.00
+overall Correlation: 1.00
+overall CV Root Mean Squared Error: 0.91
+overall CV Correlation: 0.59
+</pre></div>
+</div>
+<p>There are also methods to estimate the shrinkage parameter for the
+penalized methods using nested crossvalidation with the
+ridgeCV and lassoCV algorithms.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">ridgecv_stats</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;ridgeCV&#39;</span><span class="p">,</span>
+                        <span class="n">cv_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;kfolds&#39;</span><span class="p">,</span><span class="s1">&#39;n_folds&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;stratified&#39;</span><span class="p">:</span><span class="n">data</span><span class="o">.</span><span class="n">Y</span><span class="p">},</span>
+                        <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;alphas&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)})</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.8.9/x64/lib/python3.8/site-packages/sklearn/utils/validation.py:70: FutureWarning: Pass shuffle=False, random_state=None as keyword args. From version 1.0 (renaming of 0.25) passing these as positional arguments will result in an error
+  warnings.warn(f&quot;Pass {args_msg} as keyword args. From version &quot;
+overall Root Mean Squared Error: 0.00
+overall Correlation: 1.00
+overall CV Root Mean Squared Error: 0.56
+overall CV Correlation: 0.74
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 1 minutes  49.844 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-02-analysis-plot-multivariate-prediction-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/a14380dde36b19eaf2ebaff95f3c2b45/plot_multivariate_prediction.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_multivariate_prediction.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/62a7562dde742666b1319c4e0d0f6140/plot_multivariate_prediction.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_multivariate_prediction.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../../_sources/auto_examples/02_Analysis/plot_multivariate_prediction.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Cosan Laboratory.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
